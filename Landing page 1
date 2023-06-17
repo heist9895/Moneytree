@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Survey Landing Page</title>
+</head>
+<body>
+    <script>
+        // Function to check if the visitor is from Canada
+        function checkCountry() {
+            // AJAX request to fetch visitor's IP address and country
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', 'https://api.ipify.org?format=json', true);
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    var response = JSON.parse(xhr.responseText);
+                    var ip = response.ip;
+                    // AJAX request to fetch visitor's country based on the IP
+                    var xhrCountry = new XMLHttpRequest();
+                    xhrCountry.open('GET', 'https://ipapi.co/' + ip + '/country/', true);
+                    xhrCountry.onload = function() {
+                        if (xhrCountry.status === 200) {
+                            var country = xhrCountry.responseText;
+                            // Check if the country is Canada
+                            if (country.trim() === 'Canada') {
+                                window.location.href = 'https://tundrafile.com/show.php?l=0&u=1387353&id=54463&tracking_id=' + generateTrackingId();
+                            } else {
+                                // Redirect to a different page for non-Canadian visitors
+                                window.location.href = 'https://example.com/non-canadian.html';
+                            }
+                        }
+                    };
+                    xhrCountry.send();
+                }
+            };
+            xhr.send();
+        }
+
+        // Function to generate a unique tracking ID
+        function generateTrackingId() {
+            var timestamp = new Date().getTime();
+            var random = Math.floor(Math.random() * 10000);
+            return 'CAN-' + timestamp + '-' + random;
+        }
+
+        // Call the checkCountry function when the page loads
+        window.onload = checkCountry;
+    </script>
+    <h1>Welcome to our Survey!</h1>
+    <p>This survey pays up to $200 to participants from Canada.</p>
+    <p>Please wait while we verify your location...</p>
+</body>
+</html>
